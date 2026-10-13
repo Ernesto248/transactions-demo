@@ -16,4 +16,4 @@ La demo local usa `http://localhost:3004`. `pnpm build` genera el sitio estátic
 
 ## Recorrido
 
-El botón **Iniciar recorrido** abre una introducción y capítulos de Transacciones, Cuentas, Remeseros y Finanzas. Las acciones guiadas crean una entrada, la asignan, registran un wire y cobran una deuda externa. **Reiniciar demo** restaura los datos ficticios iniciales.
+El botón **Ver recorrido** abre una introducción y capítulos de Transacciones, Cuentas, Remeseros y Finanzas. Las acciones guiadas crean una entrada, la asignan, registran un wire y cobran una deuda externa. **Reiniciar demo** restaura los datos ficticios iniciales.

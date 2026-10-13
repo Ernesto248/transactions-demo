@@ -163,7 +163,7 @@ export function inventoryForAccount(state: DemoState, accountId: string): Invent
 }
 
 export function zelleSummary(state: DemoState) {
-  const accounts = state.accounts.map((account) => ({ ...account, ...inventoryForAccount(state, account.id).valuation }));
+  const accounts = state.accounts.map((account) => ({ ...account, accountId: account.id, ...inventoryForAccount(state, account.id).valuation }));
   const pricedUsd = round(accounts.reduce((sum, account) => sum + account.pricedUsd, 0));
   const unpricedUsd = round(accounts.reduce((sum, account) => sum + account.unpricedUsd, 0));
   const costCup = round(accounts.reduce((sum, account) => sum + account.costCup, 0));
@@ -337,6 +337,11 @@ export function setFinanceState(state: DemoState, input: { cashUsd: number; cash
 export function setRemeseroPrice(state: DemoState, remeseroId: string, price: number) {
   if (price <= 0) throw new Error("El precio debe ser mayor que cero.");
   return { ...state, remeseros: state.remeseros.map((person) => person.id === remeseroId ? { ...person, price: round(price) } : person) };
+}
+export function setRemeseroDebt(state: DemoState, remeseroId: string, targetCup: number) {
+  if (!Number.isFinite(targetCup) || !state.remeseros.some((person) => person.id === remeseroId)) throw new Error("Indica una deuda válida.");
+  const difference = round(targetCup - remeseroDebt(state, remeseroId));
+  return { ...state, remeseros: state.remeseros.map((person) => person.id === remeseroId ? { ...person, openingDebtCup: round(person.openingDebtCup + difference) } : person) };
 }
 export function canDeleteTransaction(state: DemoState, transactionId: string) {
   const transaction = state.transactions.find((entry) => entry.id === transactionId);

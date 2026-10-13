@@ -1,0 +1,313 @@
+:root {
+  --bg: #080a0e;
+  --sidebar: #0d1015;
+  --panel: #101318;
+  --panel2: #181d25;
+  --line: #262b33;
+  --text: #fafafa;
+  --muted: #8a909b;
+  --blue: #0ea5e9;
+  --green: #22c55e;
+  --amber: #f59e0b;
+  --purple: #a78bfa;
+  --red: #ef4444;
+}
+
+html, body { background: var(--bg); color: var(--text); }
+.real-shell { min-height: 100vh; background: var(--bg); }
+.real-header { position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--line); background: #080a0edb; backdrop-filter: blur(16px); }
+.real-header-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 12px 24px; min-height: 72px; }
+.real-brand-area, .real-header-actions { display: flex; align-items: center; gap: 12px; }
+.real-brand-mark { width: 36px; height: 36px; border-radius: 8px; display: grid; place-items: center; color: #081015; background: var(--blue); }
+.real-brand-copy { display: flex; flex-direction: column; gap: 2px; }
+.real-brand-copy strong { font-size: 19px; line-height: 1.2; }
+.real-brand-copy small { color: var(--muted); font-size: 11px; }
+.real-icon-button { border: 0; background: transparent; color: var(--muted); min-width: 38px; height: 38px; border-radius: 7px; display: inline-grid; place-items: center; padding: 0 8px; }
+.real-icon-button:hover { color: var(--text); background: #1d222b; }
+.real-menu-button { display: none; }
+.real-demo-badge { display: inline-flex; align-items: center; gap: 7px; color: #54dd81; border: 1px solid #1d4d30; background: #10301c; border-radius: 7px; padding: 7px 10px; font-size: 11px; }
+.real-demo-badge i { width: 7px; height: 7px; border-radius: 50%; background: #40d76b; }
+.real-main { padding: 22px 24px 40px; }
+.real-container { max-width: 1280px; margin: 0 auto; }
+.real-desktop-nav { display: flex; align-items: center; width: max-content; max-width: 100%; gap: 6px; padding: 7px; background: #101318f2; border: 1px solid var(--line); border-radius: 12px; }
+.real-desktop-nav button { border: 0; border-radius: 8px; background: transparent; color: var(--muted); display: inline-flex; align-items: center; gap: 8px; padding: 9px 12px; font-size: 13px; }
+.real-desktop-nav button:hover { background: #1d232c; color: var(--text); }
+.real-desktop-nav button.active { background: var(--blue); color: #06131c; }
+.real-demo-note { display: flex; align-items: center; gap: 8px; width: max-content; max-width: 100%; margin-top: 16px; padding: 8px 11px; border: 1px solid #244458; border-radius: 8px; background: #102533; color: #b9d8e9; font-size: 11px; }
+.real-demo-note svg { color: #66c8f7; flex-shrink: 0; }
+.real-demo-note button { border: 0; background: transparent; color: #80d6ff; display: inline-flex; align-items: center; gap: 5px; padding: 0 3px; white-space: nowrap; font-weight: 700; }
+.real-view { margin-top: 24px; }
+.real-section { display: flex; flex-direction: column; gap: 16px; }
+.real-bottom-nav, .real-mobile-menu, .real-menu-overlay { display: none; }
+.real-button { border-radius: 7px; border: 1px solid var(--line); background: #1b2029; color: var(--text); padding: 8px 12px; min-height: 35px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 7px; line-height: 1.2; white-space: nowrap; }
+.real-button:hover { background: #282f3a; }
+.real-button.primary { background: var(--blue); border-color: var(--blue); color: #06131c; }
+.real-button.primary:hover { background: #36b8f0; }
+.real-button.outline { background: transparent; }
+.real-button.ghost { background: transparent; border-color: transparent; color: var(--muted); }
+.real-button.destructive { background: #dc2626; border-color: #dc2626; color: white; }
+.real-button.amber { color: #f8c96d; border-color: #9a6a21; background: #463219; }
+.real-button:disabled { opacity: .5; }
+.mobile-only { display: none; }
+
+/* Same filter shape and placement as the production dashboard. */
+.real-filter-bar { display: flex; flex-direction: column; gap: 12px; }
+.real-search { height: 42px; position: relative; display: flex; align-items: center; gap: 9px; padding: 0 12px; border: 1px solid var(--line); border-radius: 8px; background: #181d25; color: var(--muted); }
+.real-search input { width: 100%; border: 0; outline: 0; background: transparent; color: var(--text); font-size: 13px; }
+.real-search input::placeholder { color: var(--muted); }
+.real-search button { border: 0; background: transparent; color: var(--muted); display: grid; place-items: center; }
+.real-filter-toggle { height: 40px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border: 1px solid var(--line); border-radius: 8px; background: #181d25; color: var(--text); font-size: 13px; }
+.real-filter-toggle > span { display: inline-flex; align-items: center; gap: 8px; }
+.real-filter-toggle b { border-radius: 50%; width: 20px; height: 20px; display: grid; place-items: center; background: var(--blue); color: #06131c; font-size: 11px; }
+.real-filter-panel { background: #101318b8; border: 1px solid var(--line); border-radius: 9px; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+.real-date-filter > span, .real-filter-grid label { display: flex; flex-direction: column; gap: 7px; font-size: 12px; font-weight: 600; color: #b0b6c0; }
+.real-date-filter > div { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.real-date-filter button { border-radius: 6px; background: transparent; border: 1px solid var(--line); color: var(--muted); padding: 7px 10px; font-size: 11px; }
+.real-date-filter button.active { background: var(--blue); border-color: var(--blue); color: #06131c; }
+.real-filter-grid { display: grid; gap: 12px; }
+.real-filter-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.real-filter-grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.real-filter-grid input, .real-filter-grid select, .real-account-fields input, .real-account-fields select { min-width: 0; width: 100%; height: 39px; border-radius: 7px; border: 1px solid var(--line); padding: 0 11px; color: var(--text); background: #1b2029; font-size: 12px; }
+.real-clear { border: 0; background: transparent; color: var(--muted); font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 7px; padding: 5px; }
+
+.real-dashboard-kpis { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; }
+.real-dashboard-kpis .stat-card, .real-bank-totals { min-height: 136px; border-radius: 10px; background: var(--panel); border: 1px solid var(--line); padding: 20px; }
+.real-dashboard-kpis .stat-card .stat-top { font-size: 13px; margin-bottom: 10px; }
+.real-dashboard-kpis .stat-card .stat-top svg { box-sizing: content-box; padding: 10px; border-radius: 8px; background: #1b2029; color: var(--blue); }
+.real-dashboard-kpis .stat-card strong { font-size: clamp(18px, 2.1vw, 24px); }
+.real-dashboard-kpis .stat-card small { margin-top: 7px; font-size: 11px; }
+.real-bank-totals h3 { font-size: 13px; color: var(--muted); font-weight: 500; margin: 0 0 10px; }
+.real-bank-totals > div { display: flex; justify-content: space-between; gap: 9px; margin-top: 6px; font-size: 12px; }
+.real-bank-totals strong { font-size: 12px; }
+.real-charts { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 20px; }
+.real-chart-card { min-height: 282px; padding: 22px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
+.real-chart-card h3 { font-size: 17px; font-weight: 600; margin: 0 0 4px; }
+.real-chart-card p { font-size: 11px; color: var(--muted); }
+.real-chart-bars { height: 185px; display: grid; grid-template-columns: repeat(12, minmax(0,1fr)); align-items: end; gap: 10px; padding-top: 15px; border-bottom: 1px solid #34414c; }
+.real-chart-bars > div { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: end; gap: 7px; min-width: 0; }
+.real-chart-bars i { display: block; width: 100%; max-width: 24px; min-height: 3px; background: var(--blue); border-radius: 3px 3px 0 0; }
+.real-chart-bars span { font-size: 9px; color: var(--muted); white-space: nowrap; }
+.real-bank-rings { display: flex; flex-direction: column; gap: 22px; margin-top: 27px; }
+.real-bank-rings > div { display: flex; align-items: center; gap: 10px; }
+.real-bank-ring { width: 45px; height: 45px; border-radius: 50%; position: relative; flex-shrink: 0; }
+.real-bank-ring::after { content: ""; position: absolute; inset: 9px; border-radius: 50%; background: var(--panel); }
+.real-bank-rings strong, .real-bank-rings small { display: block; font-size: 12px; }
+.real-bank-rings small { color: var(--muted); margin-top: 3px; }
+.real-list-title { font-size: 19px; font-weight: 600; margin: 2px 0 -3px; }
+.real-transaction-list { display: flex; flex-direction: column; gap: 12px; }
+.real-transaction-card { display: flex; align-items: flex-start; gap: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.real-transaction-card:hover { background: #1c222b; }
+.real-tx-icon { width: 33px; height: 33px; display: grid; place-items: center; flex-shrink: 0; border-radius: 50%; color: #36ce73; background: #1c2730; }
+.real-tx-content { flex: 1; min-width: 0; }
+.real-tx-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.real-tx-heading > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.real-tx-heading strong { font-size: 14px; overflow-wrap: anywhere; }
+.real-tx-heading small { font-size: 11px; color: var(--muted); }
+.real-tx-heading b { color: #32ca68; font-size: 17px; white-space: nowrap; }
+.real-badges { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; margin-top: 13px; }
+.real-badges > span { border: 1px solid var(--line); border-radius: 6px; padding: 3px 7px; font-size: 10px; }
+.real-badges .bank { color: #91c2ff; border-color: #304269; background: #17263e; }
+.real-badges .account { color: #83dfb2; border-color: #2a5540; background: #183628; }
+.real-badges .assigned { color: #5cc8ff; border-color: #215371; background: #123047; }
+.real-badges .unassigned { color: #b4bac5; }
+.real-badges .deleted { color: #ff9e9e; border-color: #753237; background: #3b1e23; }
+.real-code { border: 0; background: transparent; color: var(--muted); display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-family: ui-monospace, monospace; overflow-wrap: anywhere; }
+.real-tx-date { margin: 8px 0 0; font-size: 11px; color: var(--muted); }
+.real-tx-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.real-page-heading { display: flex; align-items: end; justify-content: space-between; gap: 12px; }
+.real-page-heading h2 { font-size: 24px; line-height: 1.2; margin: 0 0 5px; }
+.real-page-heading p { font-size: 12px; margin: 0; color: var(--muted); }
+.real-heading-actions { display: flex; align-items: center; gap: 9px; }
+.real-toggle { display: flex; gap: 2px; background: #181d25; border: 1px solid var(--line); border-radius: 8px; padding: 3px; }
+.real-toggle button { background: transparent; border: 0; border-radius: 6px; padding: 7px 9px; font-size: 11px; color: var(--muted); }
+.real-toggle button.active { background: var(--blue); color: #06131c; }
+
+.real-account-kpis { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 9px; }
+.real-account-kpis > div { min-width: 0; overflow: hidden; background: #101318a8; border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.real-account-kpis span { display: block; color: var(--muted); font-size: 12px; margin-bottom: 9px; }
+.real-account-kpis strong { display: block; font-size: clamp(13px, 2vw, 20px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.real-account-list, .real-remesero-list { display: flex; flex-direction: column; gap: 16px; }
+.real-account-card, .real-remesero-card { background: linear-gradient(135deg, var(--panel) 70%, #171b22); border: 1px solid var(--line); border-radius: 10px; padding: 23px; }
+.real-account-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.real-account-head h3 { font-size: 17px; margin: 0 0 5px; }
+.real-account-head p, .real-account-owner { font-size: 11px; color: var(--muted); margin: 0; }
+.real-account-buttons { display: flex; flex-wrap: wrap; gap: 7px; }
+.real-account-owner { margin-top: 13px; }
+.real-account-owner strong { color: var(--text); }
+.real-account-metrics { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 9px; margin-top: 15px; }
+.real-account-metrics > div, .real-remesero-summary > div { border: 1px solid var(--line); border-radius: 10px; background: #080a0eb3; min-width: 0; padding: 11px 13px; }
+.real-account-metrics span, .real-remesero-summary span { display: block; text-transform: uppercase; letter-spacing: .04em; font-size: 10px; color: var(--muted); }
+.real-account-metrics strong, .real-remesero-summary strong { display: block; margin-top: 6px; font-size: 14px; overflow-wrap: anywhere; }
+.real-account-metrics > div:first-child strong { color: var(--blue); }
+.real-account-expanded { margin-top: 16px; display: flex; flex-direction: column; gap: 16px; }
+.real-account-form, .real-account-history { padding: 14px; background: #090c11a6; border: 1px solid var(--line); border-radius: 10px; }
+.real-form-title, .real-account-history h4 { font-size: 14px; font-weight: 600; margin: 0 0 13px; }
+.real-account-fields { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 11px; }
+.real-account-fields label { display: flex; flex-direction: column; gap: 5px; font-size: 11px; color: var(--muted); }
+.real-account-fields small { font-size: 10px; }
+.real-account-form > button { margin-top: 13px; }
+.real-wire-preview { border: 1px solid #296a89; border-radius: 9px; background: #0e2533; padding: 12px; margin-top: 13px; }
+.real-wire-preview p { font-size: 12px; font-weight: 600; margin: 0 0 10px; }
+.real-wire-preview > small { display: block; margin-top: 10px; font-size: 10px; color: var(--muted); }
+.real-preview-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 7px; background: #090e15a1; padding: 8px; margin-top: 7px; border-radius: 6px; font-size: 11px; color: var(--muted); }
+.real-preview-grid b { color: var(--text); }
+.real-net-profit { border: 1px solid #324554; border-radius: 7px; padding: 9px; margin-top: 10px; font-size: 12px; }
+.real-net-profit b { color: #4cdf83; }
+.real-account-history > div { border: 1px solid var(--line); border-radius: 7px; padding: 11px; display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-top: 7px; }
+.real-account-history > div.reversed { opacity: .5; }
+.real-account-history > div > div { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.real-account-history strong { font-size: 14px; }
+.real-account-history small { font-size: 11px; color: var(--muted); }
+.real-history-tag { border-radius: 30px; background: #1d2530; padding: 4px 7px; color: var(--muted); font-size: 10px; }
+
+.real-remesero-card { position: relative; cursor: pointer; transition: border-color .2s; }
+.real-remesero-card:hover { border-color: #236893; }
+.real-remesero-link { position: absolute; inset: 0; border: 0; background: transparent; z-index: 0; }
+.real-remesero-content { position: relative; z-index: 1; pointer-events: none; }
+.real-remesero-actions { pointer-events: auto; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; width: min(100%, 448px); margin: 13px auto 0; }
+.real-remesero-actions button { width: 100%; }
+.real-remesero-summary { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; }
+.real-remesero-summary > div.debt { background: #0d2637; border-color: #165170; }
+.real-remesero-summary > div.debt strong { color: var(--blue); }
+.real-detail { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+.real-detail .real-remesero-summary { width: 100%; }
+.real-detail-card { width: 100%; border: 1px solid var(--line); border-radius: 10px; padding: 16px; background: var(--panel); }
+.real-detail-card h3 { margin: 0 0 14px; font-size: 16px; }
+.real-detail-card > p { color: var(--muted); font-size: 11px; margin: 15px 0 0; }
+
+.real-finances { gap: 18px; }
+.real-finance-actions { display: flex; flex-wrap: wrap; gap: 7px; }
+.real-capital { background: linear-gradient(135deg, #0d2d41, #101318 65%); border: 1px solid #245b78; border-radius: 10px; padding: 25px 27px; }
+.real-capital span { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--muted); }
+.real-capital strong { display: block; font-size: clamp(28px,4vw,40px); margin-top: 14px; letter-spacing: -.03em; }
+.real-capital p { margin: 7px 0 0; color: var(--muted); font-size: 12px; }
+.real-capital small { display: block; margin-top: 6px; color: #f3c672; font-size: 11px; }
+.real-finance-kpis { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 11px; }
+.real-finance-kpis .stat-card { min-width: 0; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); padding: 17px; }
+.real-finance-kpis .stat-top { display: flex; flex-direction: column-reverse; align-items: flex-start; gap: 11px; margin: 0; font-size: 11px; text-transform: uppercase; }
+.real-finance-kpis .stat-top svg { color: var(--muted); }
+.real-finance-kpis .stat-card strong { font-size: 17px; margin-top: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.real-finance-kpis .stat-card:last-child { grid-column: auto; border-color: #80521e; background: #3828175c; }
+.real-finance-kpis .stat-card:last-child strong, .real-finance-kpis .stat-card:last-child .stat-top { color: #fcd389; }
+.real-profit-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+.real-profit-card { background: linear-gradient(135deg, #102b20, var(--panel) 70%); border: 1px solid #2c5e40; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 6px; }
+.real-profit-card span { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+.real-profit-card strong { color: #4cdb83; font-size: 20px; }
+.real-profit-card b { color: #4cdb83; font-size: 13px; }
+.real-profit-card small { color: var(--muted); font-size: 11px; }
+.real-finance-card, .real-valuation { border: 1px solid var(--line); background: var(--panel); border-radius: 10px; padding: 20px; min-width: 0; }
+.real-finance-card h3, .real-valuation h3 { margin: 0 0 15px; font-size: 17px; }
+.real-owner-totals { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 9px; }
+.real-owner-totals span { border: 1px solid var(--line); border-radius: 7px; padding: 10px; color: var(--muted); font-size: 11px; }
+.real-owner-totals b { display: block; margin-top: 5px; color: var(--text); font-size: 14px; }
+.real-owner-account { width: 100%; margin-top: 10px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 7px; border: 1px solid var(--line); border-radius: 7px; background: #0b0e14; color: var(--text); padding: 10px; text-align: left; font-size: 12px; }
+.real-owner-account small { flex-basis: 100%; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.real-valuation { background: linear-gradient(135deg, #0b2230, var(--panel) 50%); border-color: #23506a; }
+.real-valuation-kpis { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 11px; }
+.real-valuation-kpis > div { border: 1px solid var(--line); border-radius: 9px; background: #080a0ebd; padding: 13px; min-width: 0; }
+.real-valuation-kpis span, .real-valuation-kpis small { display: block; color: var(--muted); font-size: 11px; }
+.real-valuation-kpis strong { display: block; margin-top: 7px; font-size: 16px; overflow-wrap: anywhere; }
+.real-valuation-kpis small { margin-top: 5px; }
+.amber-text { color: #fbd27a; }
+.real-valuation-accounts { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; margin-top: 14px; }
+.real-valuation-accounts > div { display: flex; justify-content: space-between; gap: 9px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: #080a0e80; font-size: 12px; }
+.real-valuation-accounts > div > div:last-child { text-align: right; }
+.real-valuation-accounts small { display: block; color: var(--muted); margin-top: 5px; font-size: 10px; }
+.real-finance-columns { display: grid; grid-template-columns: minmax(0,1fr) 380px; gap: 22px; }
+.real-finance-stack { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.real-finance-list > div { border: 1px solid var(--line); border-radius: 8px; margin-top: 8px; padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 9px; font-size: 12px; }
+.real-finance-list > div.reversed { opacity: .5; }
+.real-finance-list > div > div { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.real-finance-list small { color: var(--muted); font-size: 10px; }
+.real-finance-list > div > span { color: #eac16f; }
+.real-card-head { display: flex; align-items: center; justify-content: space-between; gap: 9px; }
+.real-card-head h3 { margin-bottom: 9px; }
+.real-breakdown { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+.real-breakdown > div { border: 1px solid var(--line); border-radius: 7px; padding: 10px; background: #080a0e7c; }
+.real-breakdown span, .real-breakdown strong { display: block; }
+.real-breakdown span { color: var(--muted); font-size: 11px; }
+.real-breakdown strong { margin-top: 5px; font-size: 13px; overflow-wrap: anywhere; }
+.real-finance-aside .real-breakdown { grid-template-columns: 1fr; }
+.real-external { border: 1px solid var(--line); border-radius: 8px; margin-top: 9px; overflow: hidden; }
+.real-external-head { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; text-align: left; color: var(--text); border: 0; padding: 12px; background: #11151b; font-size: 12px; }
+.real-external-head > span:first-child { flex: 1; font-weight: 600; }
+.real-external-head > span:nth-child(2) { text-align: right; }
+.real-external-head small { display: block; color: var(--muted); font-weight: 400; margin-top: 4px; font-size: 10px; }
+.real-external-body { padding: 12px; border-top: 1px solid var(--line); display: flex; align-items: center; flex-wrap: wrap; gap: 7px; }
+.real-external-body p { flex-basis: 100%; color: var(--muted); font-size: 11px; margin: 0 0 6px; }
+
+.dialog, .welcome-card { background: #11151b; border-color: var(--line); border-radius: 10px; }
+.dialog input, .dialog select { background: #191f28; border-color: var(--line); }
+.primary-button { background: var(--blue); border-color: var(--blue); color: #06131c; box-shadow: none; border-radius: 7px; }
+.primary-button:hover { background: #36b8f0; }
+.toast { bottom: 18px; }
+
+@media (max-width: 1050px) {
+  .real-dashboard-kpis { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .real-finance-kpis { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .real-finance-kpis .stat-card:last-child { grid-column: 1/-1; }
+  .real-finance-columns { grid-template-columns: 1fr; }
+  .real-account-fields { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .real-page-heading:has(.real-finance-actions) { align-items: flex-start; flex-direction: column; }
+}
+@media (max-width: 767px) {
+  .real-header-inner { min-height: 60px; padding: 10px 16px; }
+  .real-menu-button { display: inline-grid; }
+  .real-brand-copy strong { font-size: 16px; }
+  .real-brand-copy small { display: none; }
+  .real-brand-mark { width: 34px; height: 34px; }
+  .real-demo-badge { display: none; }
+  .real-main { padding: 18px 15px 100px; }
+  .real-desktop-nav { display: none; }
+  .real-demo-note { margin-top: 0; font-size: 10px; line-height: 1.4; }
+  .real-view { margin-top: 18px; }
+  .real-bottom-nav { display: flex; position: fixed; bottom: 0; left: 0; right: 0; z-index: 45; justify-content: space-around; background: #101318f2; border-top: 1px solid var(--line); backdrop-filter: blur(12px); padding: 6px 4px max(7px, env(safe-area-inset-bottom)); }
+  .real-bottom-nav button { flex: 1; min-width: 0; border: 0; background: transparent; color: var(--muted); padding: 5px 0; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; }
+  .real-bottom-nav button.selected { color: var(--blue); }
+  .real-menu-overlay { display: block; position: fixed; inset: 0; z-index: 60; border: 0; background: #000b; }
+  .real-mobile-menu { display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0; width: 255px; z-index: 61; background: var(--panel); border-right: 1px solid var(--line); padding: 16px; }
+  .real-mobile-menu-title { display: flex; justify-content: space-between; align-items: center; font-weight: 600; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+  .real-mobile-menu-title button { border: 0; color: var(--muted); background: transparent; }
+  .real-mobile-menu > button { display: flex; align-items: center; gap: 11px; color: var(--muted); background: transparent; border: 0; border-radius: 8px; padding: 11px 10px; margin-top: 6px; text-align: left; font-size: 13px; }
+  .real-mobile-menu > button.active { color: #06131c; background: var(--blue); }
+  .real-charts, .real-profit-grid, .real-valuation-accounts { grid-template-columns: 1fr; }
+  .real-chart-bars span { font-size: 8px; }
+  .real-page-heading { align-items: stretch; flex-direction: column; }
+  .real-page-heading h2 { font-size: 22px; }
+  .real-heading-actions { justify-content: space-between; }
+  .desktop-only { display: none; }
+  .mobile-only { display: inline; }
+  .real-account-head { flex-direction: column; align-items: stretch; }
+  .real-account-buttons { justify-content: flex-start; }
+  .real-account-metrics { grid-template-columns: 1fr; }
+  .real-account-kpis > div { padding: 9px; }
+  .real-account-kpis span { font-size: 10px; }
+  .real-account-kpis strong { font-size: clamp(12px, 3.6vw, 17px); }
+  .real-valuation-kpis { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .real-finance-actions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); width: 100%; }
+  .real-finance-actions > button:first-child { grid-column: 1/-1; }
+  .real-filter-grid.four { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .real-preview-grid { grid-template-columns: 1fr 1fr; }
+  .toast { bottom: 77px; }
+}
+@media (max-width: 480px) {
+  .real-brand-area { gap: 8px; }
+  .real-brand-copy strong { font-size: 14px; }
+  .real-section { gap: 13px; }
+  .real-filter-grid.two { grid-template-columns: 1fr; }
+  .real-date-filter > div { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .real-date-filter button { padding: 7px 3px; font-size: 10px; }
+  .real-transaction-card { padding: 12px; gap: 9px; }
+  .real-tx-heading { flex-direction: column; gap: 6px; }
+  .real-remesero-card, .real-account-card { padding: 16px; }
+  .real-remesero-summary > div { padding: 8px; }
+  .real-remesero-summary span { font-size: 9px; }
+  .real-remesero-summary strong { font-size: 12px; }
+  .real-remesero-actions .real-button { font-size: 11px; padding: 7px 5px; }
+  .real-capital { padding: 20px; }
+  .real-capital strong { font-size: 29px; }
+  .real-finance-card, .real-valuation { padding: 15px; }
+  .real-owner-totals { grid-template-columns: 1fr; }
+  .real-external-head { flex-wrap: wrap; }
+  .real-external-head > span:nth-child(2) { text-align: left; }
+}

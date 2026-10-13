@@ -4,6 +4,7 @@ import {
   collectDebt, counterpartyBalance, createSeedState, createWire, exchangeCurrency,
   inventoryForAccount, ownerDebt, pendingAssignments, previewDemoWire,
   readDemoState, remeseroDebt, reverseExpense, reverseOutflow, zelleSummary,
+  setRemeseroDebt,
 } from "../lib/demo-engine";
 
 describe("simulador de Transactions Demo", () => {
@@ -78,6 +79,15 @@ describe("simulador de Transactions Demo", () => {
     expect(after.cashUsd - state.cashUsd).toBe(100);
     expect(counterpartyBalance(after, "cp1", "USD")).toBe(counterpartyBalance(state, "cp1", "USD") - 100);
     expect(capitalTotal(after)).toBe(before);
+  });
+
+  it("editar la deuda fija exactamente el saldo y actualiza el capital", () => {
+    const original = createSeedState();
+    const balance = remeseroDebt(original, "r1");
+    const adjusted = setRemeseroDebt(original, "r1", 10_000);
+    expect(remeseroDebt(adjusted, "r1")).toBe(10_000);
+    expect(capitalTotal(adjusted)).toBeCloseTo(capitalTotal(original)! + (balance - 10_000) / original.usdCupRate!, 2);
+    expect(remeseroDebt(setRemeseroDebt(adjusted, "r1", -5_000), "r1")).toBe(-5_000);
   });
 
   it("gastos y cambios se registran y el gasto se revierte", () => {
