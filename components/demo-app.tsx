@@ -22,6 +22,23 @@ import {
 
 type Modal = "incoming" | "assign" | "wire" | "accountExpense" | "price" | "debt" | "remeseroPayment" | "cash" | "expense" | "exchange" | "collect" | "explain" | null;
 type Chapter = "completo" | "transacciones" | "cuentas" | "remeseros" | "finanzas";
+type TourSnapshot = {
+  data: DemoState;
+  section: Section;
+  modal: Modal;
+  selectedId: string;
+  selectedAccount: string;
+  selectedPerson: string;
+  expandedAccount: string | null;
+  expandedCounterparty: string | null;
+  incoming: { accountId: string; sender: string; amountUsd: string };
+  assignTo: string;
+  wire: { accountId: string; counterpartyId: string; principalUsd: string; feeUsd: string; settlementCurrency: Currency; rateOrPercent: string };
+  accountMovementType: "wire" | "expense";
+  simpleAmount: string;
+  simpleCurrency: Currency;
+  tourTransactionId: string;
+};
 const money = (value: number, currency: Currency = "USD") => new Intl.NumberFormat("en-US", { style: "currency", currency, maximumFractionDigits: 2 }).format(value);
 const number = (value: number, digits = 0) => new Intl.NumberFormat("en-US", { maximumFractionDigits: digits }).format(value);
 const parseAmountInput = (value: string) => Number(value.replace(/,/g, ""));
@@ -72,6 +89,11 @@ export default function DemoApp() {
   const driverRef = useRef<Driver | null>(null);
   const tourTransactionRef = useRef("");
   const tourStepRef = useRef<string | null>(null);
+  const tourSnapshotsRef = useRef<TourSnapshot[]>([]);
+  const tourMaxReachedRef = useRef(0);
+  const tourStepsRef = useRef<DriveStep[]>([]);
+  const tourCurrentIndexRef = useRef(0);
+  const tourMoveTimerRef = useRef<number | null>(null);
 
   const [incoming, setIncoming] = useState({ accountId: "chase", sender: "", amountUsd: "" });
   const [assignTo, setAssignTo] = useState("r1");
@@ -84,6 +106,13 @@ export default function DemoApp() {
   const [debtKind, setDebtKind] = useState<"deuda" | "fondo">("deuda");
   const [simpleRate, setSimpleRate] = useState("700");
   const [financeFields, setFinanceFields] = useState({ cashUsd: "", cashCup: "", usdCupRate: "" });
+  const tourViewRef = useRef<TourSnapshot | null>(null);
+  tourViewRef.current = data ? {
+    data, section, modal, selectedId, selectedAccount, selectedPerson,
+    expandedAccount, expandedCounterparty, incoming, assignTo, wire,
+    accountMovementType, simpleAmount, simpleCurrency,
+    tourTransactionId: tourTransactionRef.current,
+  } : null;
 
   useEffect(() => {
     const loaded = readDemoState(window.localStorage.getItem(STORAGE_KEY));
@@ -126,11 +155,45 @@ export default function DemoApp() {
     setSearch(""); setCodeFilter(""); setBankFilter("all"); setAccountFilter("all");
     setSenderFilter(""); setAmountFilter(""); setRemeseroFilter("all"); setDateFilter("all");
   };
+  const restoreTourSnapshot = (snapshot: TourSnapshot) => {
+    dataRef.current = snapshot.data;
+    setData(snapshot.data);
+    setSection(snapshot.section);
+    setModal(snapshot.modal);
+    setSelectedId(snapshot.selectedId);
+    setSelectedAccount(snapshot.selectedAccount);
+    setSelectedPerson(snapshot.selectedPerson);
+    setExpandedAccount(snapshot.expandedAccount);
+    setExpandedCounterparty(snapshot.expandedCounterparty);
+    setIncoming(snapshot.incoming);
+    setAssignTo(snapshot.assignTo);
+    setWire(snapshot.wire);
+    setAccountMovementType(snapshot.accountMovementType);
+    setSimpleAmount(snapshot.simpleAmount);
+    setSimpleCurrency(snapshot.simpleCurrency);
+    tourTransactionRef.current = snapshot.tourTransactionId;
+  };
+  const moveTourTo = (index: number) => {
+    const instance = driverRef.current;
+    if (!instance?.isActive()) return;
+    const snapshot = tourSnapshotsRef.current[index];
+    if (snapshot) restoreTourSnapshot(snapshot);
+    const step = tourStepsRef.current[index];
+    if (step) step.disableActiveInteraction = index < tourMaxReachedRef.current || !step.data?.interactive;
+    tourStepRef.current = null;
+    if (tourMoveTimerRef.current !== null) window.clearTimeout(tourMoveTimerRef.current);
+    tourMoveTimerRef.current = window.setTimeout(() => {
+      tourMoveTimerRef.current = null;
+      if (instance.isActive()) instance.moveTo(index);
+    }, 120);
+  };
   const advanceTour = (step: string) => {
     const instance = driverRef.current;
     if (!instance?.isActive() || tourStepRef.current !== step) return;
-    tourStepRef.current = null;
-    window.setTimeout(() => { if (instance.isActive()) instance.moveNext(); }, 120);
+    const index = instance.getActiveIndex();
+    if (index === undefined || index < tourMaxReachedRef.current) return;
+    tourMaxReachedRef.current = index + 1;
+    moveTourTo(index + 1);
   };
   const navigateFromControl = (next: Section) => {
     navigate(next);
@@ -165,6 +228,7 @@ export default function DemoApp() {
     const fresh = createSeedState();
     dataRef.current = fresh; setData(fresh);
     tourTransactionRef.current = ""; tourStepRef.current = null;
+    tourSnapshotsRef.current = []; tourMaxReachedRef.current = 0; tourCurrentIndexRef.current = 0;
     clearFilters(); setShowTrash(false); setModal(null); setExpandedAccount(null);
     setExpandedCounterparty(null); setDetailRemesero(null); setMenuOpen(false);
     setIncoming({ accountId: "chase", sender: "", amountUsd: "" });
@@ -172,15 +236,38 @@ export default function DemoApp() {
     const t: DriveStep[] = [];
     const add = (key: string, element: string | (() => Element), title: string, description: string, options: { action?: boolean; advanceOnClick?: boolean; canContinue?: () => boolean } = {}) => {
       const popover: Popover = {
-        title, description, side: "bottom", align: "start", showButtons: options.action ? ["close"] : ["next", "close"],
+        title, description, side: "bottom", align: "start",
+        showButtons: t.length ? ["previous", "next", "close"] : ["next", "close"],
       };
-      if (options.canContinue) popover.onNextClick = (_element, _step, context) => {
-        if (options.canContinue?.()) context.driver.moveNext();
+      popover.onPrevClick = (_element, _step, context) => {
+        const index = context.driver.getActiveIndex();
+        if (index !== undefined && index > 0) moveTourTo(index - 1);
+      };
+      popover.onNextClick = (_element, _step, context) => {
+        const index = context.driver.getActiveIndex();
+        if (index === undefined) return;
+        if (index === t.length - 1) { context.driver.destroy(); return; }
+        if (index === tourMaxReachedRef.current) {
+          if (options.action) { setToast("Completa la acción señalada para continuar."); return; }
+          if (options.canContinue && !options.canContinue()) return;
+          if (key === "wire-fields" && tourViewRef.current) tourSnapshotsRef.current[index] = tourViewRef.current;
+          tourMaxReachedRef.current = index + 1;
+        }
+        moveTourTo(index + 1);
       };
       t.push({
         element, waitForElement: 5000, advanceOnClick: options.advanceOnClick ?? false,
         disableActiveInteraction: !options.action && key !== "wire-fields",
-        onHighlighted: () => { tourStepRef.current = key; }, popover,
+        data: { interactive: options.action || key === "wire-fields" },
+        onHighlighted: (_element, _step, context) => {
+          tourStepRef.current = key;
+          const index = context.driver.getActiveIndex();
+          if (index !== undefined) tourCurrentIndexRef.current = index;
+          if (index !== undefined && index > tourMaxReachedRef.current) tourMaxReachedRef.current = index;
+          if (index !== undefined && !tourSnapshotsRef.current[index] && tourViewRef.current) {
+            tourSnapshotsRef.current[index] = tourViewRef.current;
+          }
+        }, popover,
       });
     };
     const navTarget = (sectionId: Section) => () => document.querySelector(
@@ -232,12 +319,22 @@ export default function DemoApp() {
       add("collect-result", "#cash-kpi", "Cobro reflejado", "Comprueba el efectivo actualizado. Los gastos, cambios de moneda y otros movimientos también pueden explorarse con datos ficticios.");
     }
     navigate(chapter === "completo" ? "inicio" : chapter);
+    tourStepsRef.current = t;
     window.setTimeout(() => {
       const instance = driver({
         showProgress: true, allowClose: true, allowKeyboardControl: false, overlayClickBehavior: "none",
         nextBtnText: "Siguiente", prevBtnText: "Anterior", doneBtnText: "Terminar",
         popoverClass: "demo-driver-popover", steps: t,
-        onDestroyed: () => { tourStepRef.current = null; setModal(null); },
+        onDestroyed: () => {
+          if (tourMoveTimerRef.current !== null) window.clearTimeout(tourMoveTimerRef.current);
+          tourMoveTimerRef.current = null;
+          if (tourCurrentIndexRef.current < tourMaxReachedRef.current) {
+            const latest = tourSnapshotsRef.current[tourMaxReachedRef.current];
+            if (latest) restoreTourSnapshot(latest);
+          }
+          tourStepRef.current = null;
+          setModal(null);
+        },
       });
       driverRef.current = instance;
       instance.drive();

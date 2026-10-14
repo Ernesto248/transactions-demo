@@ -16,4 +16,4 @@ La demo local usa `http://localhost:3004`. `pnpm build` genera el sitio estátic
 
 ## Recorrido
 
-El botón **Ver recorrido** abre una introducción y capítulos de Transacciones, Cuentas, Remeseros y Finanzas. El visitante pulsa los controles reales, completa los formularios y confirma una entrada, su asignación, un wire y un cobro externo; el recorrido solo avanza cuando cada acción válida termina. **Reiniciar demo** restaura los datos ficticios iniciales.
+El botón **Ver recorrido** abre una introducción y capítulos de Transacciones, Cuentas, Remeseros y Finanzas. El visitante pulsa los controles reales, completa los formularios y confirma una entrada, su asignación, un wire y un cobro externo; el recorrido solo avanza cuando cada acción válida termina. Los botones **Anterior** y **Siguiente** permiten revisar los pasos ya completados sin repetir operaciones; al llegar a un paso nuevo hay que realizar su acción. **Reiniciar demo** restaura los datos ficticios iniciales.
