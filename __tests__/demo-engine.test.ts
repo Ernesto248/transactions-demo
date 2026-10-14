@@ -4,7 +4,7 @@ import {
   collectDebt, counterpartyBalance, createSeedState, createWire, exchangeCurrency,
   inventoryForAccount, ownerDebt, pendingAssignments, previewDemoWire,
   readDemoState, remeseroDebt, reverseExpense, reverseOutflow, zelleSummary,
-  setRemeseroDebt,
+  setRemeseroDebt, setRemeseroPrice,
 } from "../lib/demo-engine";
 
 describe("simulador de Transactions Demo", () => {
@@ -98,5 +98,26 @@ describe("simulador de Transactions Demo", () => {
     const fx = exchangeCurrency(original, "USD", 100, 700);
     expect(fx.cashUsd).toBe(original.cashUsd - 100);
     expect(fx.cashCup).toBe(original.cashCup + 70000);
+  });
+
+  it("mantiene coherente el recorrido manual de entrada, asignación, wire y cobro", () => {
+    const initial = createSeedState();
+    const incoming = addIncoming(initial, { accountId: "chase", sender: "Comercio de prueba", amountUsd: 1200 });
+    const transactionId = incoming.transactions[0].id;
+    expect(pendingAssignments(incoming).amountUsd).toBe(pendingAssignments(initial).amountUsd + 1200);
+
+    const assigned = assignTransaction(incoming, transactionId, "r1");
+    expect(assigned.transactions[0].remeseroId).toBe("r1");
+    expect(pendingAssignments(assigned).amountUsd).toBe(pendingAssignments(initial).amountUsd);
+    const appliedPrice = assigned.transactions[0].priceApplied;
+    const repriced = setRemeseroPrice(assigned, "r1", 690);
+    expect(repriced.transactions[0].priceApplied).toBe(appliedPrice);
+
+    const wire = createWire(repriced, { accountId: "chase", counterpartyId: "cp1", principalUsd: 1000, feeUsd: 25, settlementCurrency: "CUP", rateOrPercent: 735 });
+    expect(accountBalance(wire, "chase")).toBe(accountBalance(repriced, "chase") - 1025);
+    const collected = collectDebt(wire, "cp1", "USD", 100);
+    expect(collected.cashUsd).toBe(wire.cashUsd + 100);
+    expect(counterpartyBalance(collected, "cp1", "USD")).toBe(counterpartyBalance(wire, "cp1", "USD") - 100);
+    expect(capitalTotal(collected)).toBe(capitalTotal(wire));
   });
 });
