@@ -9,7 +9,8 @@ import {
   RotateCcw, Scale, Search, ShieldCheck, SlidersHorizontal, Sparkles, TrendingUp,
   Trash2, Users, Wallet, X,
 } from "lucide-react";
-import type { DriveStep, Driver, Popover } from "driver.js";
+import type { DriveStep, Driver, Popover, PopoverDOM } from "driver.js";
+import { continueTourStep } from "@/lib/tour-navigation";
 import {
   STORAGE_KEY, accountBalance, addAccountExpense, addExpense, addIncoming,
   assignTransaction, canDeleteTransaction, capitalTotal, collectDebt, counterpartyBalance,
@@ -155,6 +156,19 @@ export default function DemoApp() {
     setSearch(""); setCodeFilter(""); setBankFilter("all"); setAccountFilter("all");
     setSenderFilter(""); setAmountFilter(""); setRemeseroFilter("all"); setDateFilter("all");
   };
+  const showTourNotice = (message: string) => {
+    const popover = driverRef.current?.getState("popover") as PopoverDOM | undefined;
+    if (!popover) return;
+    let notice = popover.description.querySelector<HTMLParagraphElement>(".demo-tour-notice");
+    if (!notice) {
+      notice = document.createElement("p");
+      notice.className = "demo-tour-notice";
+      notice.setAttribute("role", "alert");
+      popover.description.appendChild(notice);
+    }
+    notice.textContent = message;
+    driverRef.current?.refresh();
+  };
   const restoreTourSnapshot = (snapshot: TourSnapshot) => {
     dataRef.current = snapshot.data;
     setData(snapshot.data);
@@ -230,6 +244,7 @@ export default function DemoApp() {
   const startTour = useCallback(async (chapter: Chapter) => {
     driverRef.current?.destroy();
     setShowWelcome(false); setShowChapters(false);
+    setToast("");
     window.localStorage.setItem("transactions-demo-tour-seen", "yes");
     const fresh = createSeedState();
     dataRef.current = fresh; setData(fresh);
@@ -240,7 +255,7 @@ export default function DemoApp() {
     setIncoming({ accountId: "chase", sender: "", amountUsd: "" });
     const { driver } = await import("driver.js");
     const t: DriveStep[] = [];
-    const add = (key: string, element: string | (() => Element), title: string, description: string, options: { action?: boolean; actionComplete?: () => boolean; canContinue?: () => boolean } = {}) => {
+    const add = (key: string, element: string | (() => Element), title: string, description: string, options: { action?: boolean; actionComplete?: () => boolean; prepareNext?: () => void; canContinue?: () => boolean } = {}) => {
       const popover: Popover = {
         title, description, side: "bottom", align: "start",
         showButtons: t.length ? ["previous", "next", "close"] : ["next", "close"],
@@ -252,14 +267,24 @@ export default function DemoApp() {
       popover.onNextClick = (_element, _step, context) => {
         const index = context.driver.getActiveIndex();
         if (index === undefined) return;
-        if (index === t.length - 1) { context.driver.destroy(); return; }
-        if (index === tourMaxReachedRef.current) {
-          if (options.action && !options.actionComplete?.()) { setToast("Completa la acción señalada para continuar."); return; }
-          if (options.canContinue && !options.canContinue()) return;
-          if (key === "wire-fields" && tourViewRef.current) tourSnapshotsRef.current[index] = tourViewRef.current;
-          tourMaxReachedRef.current = index + 1;
-        }
-        moveTourTo(index + 1);
+        continueTourStep({
+          isLastStep: index === t.length - 1,
+          isReview: index < tourMaxReachedRef.current,
+          requiresAction: options.action,
+          actionComplete: options.actionComplete,
+          prepareNext: options.prepareNext,
+          canContinue: options.canContinue,
+        }, {
+          finish: () => context.driver.destroy(),
+          notify: showTourNotice,
+          advance: () => {
+            if (index === tourMaxReachedRef.current) {
+              if (key === "wire-fields" && tourViewRef.current) tourSnapshotsRef.current[index] = tourViewRef.current;
+              tourMaxReachedRef.current = index + 1;
+            }
+            moveTourTo(index + 1);
+          },
+        });
       };
       t.push({
         element, waitForElement: 5000,
@@ -301,7 +326,7 @@ export default function DemoApp() {
       add("wire-fields", "#wire-fields", "Prepara el wire", "Escribe un principal (por ejemplo, 1,000 USD) y un fee (por ejemplo, 25 USD). Revisa la persona, la moneda y la tasa. De Zelle saldrá principal más fee. Pulsa Siguiente cuando el formulario sea válido.", {
         canContinue: () => {
           const valid = Boolean(document.querySelector("#wire-preview-panel")) && !document.querySelector<HTMLButtonElement>("#wire-confirm-btn")?.disabled;
-          if (!valid) setToast("Revisa los importes: el principal y el fee no pueden superar el saldo disponible.");
+          if (!valid) showTourNotice("Revisa los importes: el principal y el fee no pueden superar el saldo disponible.");
           return valid;
         },
       });
@@ -320,9 +345,10 @@ export default function DemoApp() {
     if (chapter === "completo" || chapter === "finanzas") {
       add("capital-overview", "#capital-kpi", "4 · Capital neto", "Reúne efectivo, Zelle y deudas. Las entradas aún sin remesero se reservan para no mostrar como libre un dinero que después se deberá pagar.");
       add("zelle-overview", "#zelle-valuation", "¿A qué precio se obtuvo el Zelle?", "La tarjeta muestra cuánto Zelle tiene un costo conocido y el precio promedio de esa parte. Lo que aún no tiene precio se indica por separado.");
-      add("expand-counterparty", "#external-debt-card-cp1 > .real-external-head", "Abre una deuda externa", "Pulsa la tarjeta de Cliente Demo A para ver las opciones de su cuenta corriente. Al abrirla pasarás al cobro; también puedes pulsar Siguiente si ya está abierta.", {
+      add("expand-counterparty", "#external-debt-card-cp1 > .real-external-head", "Abre una deuda externa", "Pulsa la tarjeta de Cliente Demo A o Siguiente para abrir su cuenta corriente y continuar al cobro.", {
         action: true,
         actionComplete: () => tourViewRef.current?.expandedCounterparty === "cp1",
+        prepareNext: () => setExpandedCounterparty("cp1"),
       });
       add("open-collect", "#external-debt-card-cp1 .real-external-body .real-button.outline", "Registra un cobro", "Pulsa Registrar cobro. Se abrirá el formulario de esta persona.", { action: true });
       add("confirm-collect", "#collect-form", "Completa el cobro", "Elige USD, escribe un importe positivo —por ejemplo, 100— y pulsa Registrar cobro. La deuda bajará y el efectivo subirá por el mismo importe.", { action: true });

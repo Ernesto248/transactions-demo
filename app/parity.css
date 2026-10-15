@@ -241,6 +241,7 @@ html, body { background: var(--bg); color: var(--text); }
 .primary-button { background: var(--blue); border-color: var(--blue); color: #06131c; box-shadow: none; border-radius: 7px; }
 .primary-button:hover { background: #36b8f0; }
 .toast { bottom: 18px; }
+.demo-driver-popover .demo-tour-notice { margin: 12px 0 0; padding: 10px; border: 1px solid #a77726; border-radius: 7px; background: #382817; color: #fcd389; font-size: 12px; line-height: 1.5; }
 
 @media (max-width: 1050px) {
   .real-dashboard-kpis { grid-template-columns: repeat(2,minmax(0,1fr)); }
